@@ -1,0 +1,1 @@
+pub const VERCON_INIT_DIR: &str = "./vercon";

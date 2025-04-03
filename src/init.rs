@@ -38,18 +38,16 @@ fn create_vercon_file(file_path: &str) {
 pub fn init() -> std::io::Result<()>{
     // Generate all directories
     // Create parent directory before the child directory 
-    create_vercon_dir(&"");
+    create_vercon_dir("");
 
-    create_vercon_dir(&"/branches");
-    create_vercon_dir(&"/branches/main");
+    create_vercon_dir("/branches");
+    create_vercon_dir("/branches/main");
 
-    create_vercon_dir(&"/base");
-    create_vercon_dir(&"/main");
-    create_vercon_dir(&"/staging");
+    create_vercon_dir("/base");
+    create_vercon_dir("/staging");
 
-    create_vercon_file(&"/HEAD");
-
-    create_vercon_file(&"/ignore");
+    create_vercon_file("/HEAD");
+    create_vercon_file("/ignore");
     
     Ok(())
 }

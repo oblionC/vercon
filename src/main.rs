@@ -1,9 +1,12 @@
 mod init;
 mod constants;
+mod hash;
 mod add;
 mod commit;
 
 use std::{env, process::exit};
+
+use hash::generate_dir_hash;
 
 fn main() {
     // let _ = init::init();
@@ -26,6 +29,7 @@ fn main() {
         let _ = commit::commit();
     }
     else {
-        panic!("Invalid command");
+        println!("{}", generate_dir_hash("./test".to_string()));
+        // panic!("Invalid command");
     }
 }

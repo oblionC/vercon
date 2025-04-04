@@ -4,11 +4,15 @@ use sha1::{Sha1, Digest};
 use hex::encode;
 
 use crate::constants::VERCON_INIT_DIR;
+use crate::hash::generate_dir_hash;
 
-fn clear_stage_info() {
-    let _ = fs::write(String::from("") + VERCON_INIT_DIR + "/staging/commit_info", "");
+fn clear_staging() {
+    let staging_dir_path = String::from("") + VERCON_INIT_DIR + "/staging";
+    let _ = fs::remove_dir_all(&staging_dir_path);
+    let _ = fs::create_dir(&staging_dir_path);
 }
 
+// Recursive function to read contents of route 
 pub fn add_route(route: &str) {
     let mut hasher = Sha1::new();
     let path: &Path = Path::new(route);
@@ -26,16 +30,26 @@ pub fn add_route(route: &str) {
 
         //  Create sha1 hash using contents of the file
         hasher.update(&read_result);
-        let result = hasher.finalize_reset();
-        let result = encode(result);
+        let hash_result = hasher.finalize_reset();
+        let hash= encode(hash_result);
 
-        let _ = fs::write(String::from("") + VERCON_INIT_DIR + "/staging/" + result.as_str(), read_result); 
+        // Write file contents to staging 
+        let _ = fs::write(String::from("") + VERCON_INIT_DIR + "/staging/" + hash.as_str(), read_result); 
 
-        let mut stage_file = fs::OpenOptions::new()
-            .append(true)
-            .open(String::from("") + VERCON_INIT_DIR + "/staging/commit_info")
-            .expect("Cannot open file");
-        let _ = stage_file.write((String::from("") + path.to_str().unwrap() + ":" + result.as_str() + "\n").as_bytes());
+        // append file name:file hash format
+        let commit_info_route = String::from("") + VERCON_INIT_DIR + "/staging/commit_info";
+        let commit_info_path = Path::new(commit_info_route.as_str());
+        if commit_info_path.exists() {
+            let mut stage_file = fs::OpenOptions::new()
+                .append(true)
+                .open(commit_info_path)
+                .expect("Cannot open commit_info file");
+            let _ = stage_file.write((String::from("") + path.to_str().unwrap() + ":" + hash.as_str() + "\n").as_bytes());
+
+        }
+        else {
+            let _ = fs::write(commit_info_path.to_str().unwrap(), "");
+        }
     }
     // Prolly wont happen
     else {
@@ -44,8 +58,10 @@ pub fn add_route(route: &str) {
 }
 
 pub fn add(routes: Vec<String>) {
-    clear_stage_info();
+    let staging_dir_route = String::from("") + VERCON_INIT_DIR + "/staging";
+    clear_staging();
     for route in routes {
         add_route(route.as_str());
     }
+    let _ = fs::rename(staging_dir_route.clone() + "/commit_info", staging_dir_route.clone() + "/" + generate_dir_hash(staging_dir_route).as_str());
 }

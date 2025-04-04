@@ -32,7 +32,7 @@ fn create_vercon_dir(dir_path: &str) {
 }
 
 fn create_vercon_file(file_path: &str) {
-    handle_create_file_error(String::from("") + &VERCON_INIT_DIR + file_path);
+    let _ = handle_create_file_error(String::from("") + &VERCON_INIT_DIR + file_path);
 }
 
 pub fn init() -> std::io::Result<()>{
@@ -43,8 +43,8 @@ pub fn init() -> std::io::Result<()>{
     create_vercon_dir("/branches");
     create_vercon_dir("/branches/main");
 
-    create_vercon_dir("/base");
     create_vercon_dir("/staging");
+    create_vercon_dir("/objects");
 
     create_vercon_file("/HEAD");
     create_vercon_file("/ignore");

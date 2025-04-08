@@ -3,6 +3,7 @@ mod constants;
 mod hash;
 mod add;
 mod commit;
+mod path;
 
 use std::{env, process::exit};
 

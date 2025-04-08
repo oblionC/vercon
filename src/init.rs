@@ -32,6 +32,7 @@ fn create_vercon_dir(dir_path: &str) {
 }
 
 fn create_vercon_file(file_path: &str) {
+    println!("{file_path}");
     let _ = handle_create_file_error(String::from("") + &VERCON_INIT_DIR + file_path);
 }
 
@@ -48,6 +49,7 @@ pub fn init() -> std::io::Result<()>{
 
     create_vercon_file("/HEAD");
     create_vercon_file("/ignore");
+    create_vercon_file("/commit_info");
     
     Ok(())
 }

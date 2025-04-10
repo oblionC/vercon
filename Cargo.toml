@@ -6,3 +6,5 @@ edition = "2024"
 [dependencies]
 hex = "0.4.3"
 sha1 = "0.10.6"
+strum = "0.27.1"
+strum_macros = "0.27.1"

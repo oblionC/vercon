@@ -3,13 +3,12 @@ use std::path::Path;
 use sha1::{Sha1, Digest};
 use hex::encode;
 
-use crate::constants::VERCON_INIT_DIR;
-use crate::path;
+use crate::utils::path;
 
 fn clear_staging() {
     // let staging_dir_path = String::from("") + VERCON_INIT_DIR + "/staging";
-    let staging_dir_path = path::get("/staging");
-    let commit_info_path= path::get("/commit_info");
+    let staging_dir_path = path::get_vercon_path("/staging");
+    let commit_info_path= path::get_vercon_path("/commit_info");
     let _ = fs::remove_dir_all(&staging_dir_path);
     let _ = fs::create_dir(&staging_dir_path);
     let _ = fs::write(&commit_info_path, "");
@@ -37,10 +36,10 @@ pub fn add_route(route: &str) {
         let hash= encode(hash_result);
 
         // Write file contents to staging 
-        let _ = fs::write(path::get("/staging") + hash.as_str(), read_result); 
+        let _ = fs::write(path::get_vercon_path("/staging") + hash.as_str(), read_result); 
 
         // append file name:file hash format
-        let commit_info_route = path::get("/commit_info");
+        let commit_info_route = path::get_vercon_path("/commit_info");
         let commit_info_path = Path::new(commit_info_route.as_str());
         if !commit_info_path.exists() {
             let _ = fs::write(commit_info_path.to_str().unwrap(), "");
@@ -58,18 +57,10 @@ pub fn add_route(route: &str) {
 }
 
 pub fn add(routes: Vec<String>) {
-    let commit_info_route= String::from("") + VERCON_INIT_DIR + "/commit_info";
+    let commit_info_route = path::get_vercon_path("commit_info");
     clear_staging();
     
     for route in routes {
         add_route(route.as_str());
     }
-
-    let head_hash = fs::read_to_string(String::from("") + VERCON_INIT_DIR + "/HEAD").expect("Could not read HEAD");
-
-    let mut commit_info_file = fs::OpenOptions::new()
-    .append(true)
-    .open(commit_info_route.clone())
-    .expect("Could not open commit info file");
-    let _ = commit_info_file.write(format!("-\n{head_hash}").as_bytes());
 }

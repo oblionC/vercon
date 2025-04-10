@@ -1,5 +1,5 @@
 use std::{fs, fs::File, process::exit};
-use crate::constants::VERCON_INIT_DIR;
+use crate::utils::path;
 
 fn handle_create_dir_err(dir_path: String) {
     let create_dir_result = fs::create_dir(&dir_path);
@@ -28,12 +28,12 @@ fn handle_create_file_error(file_path: String) -> Result<File, std::io::Error> {
 }
 
 fn create_vercon_dir(dir_path: &str) {
-    handle_create_dir_err(String::from("") + &VERCON_INIT_DIR + dir_path);
+    handle_create_dir_err(path::get_vercon_path(dir_path));
 }
 
 fn create_vercon_file(file_path: &str) {
-    println!("{file_path}");
-    let _ = handle_create_file_error(String::from("") + &VERCON_INIT_DIR + file_path);
+    println!("{}", path::get_vercon_path(file_path));
+    let _ = handle_create_file_error(path::get_vercon_path(file_path));
 }
 
 pub fn init() -> std::io::Result<()>{

@@ -1,1 +1,0 @@
-pub static VERCON_INIT_DIR: &str = "./vercon";

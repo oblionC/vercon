@@ -36,7 +36,7 @@ fn main() {
         }
     }
     else if command == "status" {
-        let _ = status::check_for_changes(String::from("test"));
+        let _ = status::check_for_changes();
     }
     else {
         println!("{}", generate_dir_hash("./test".to_string()));

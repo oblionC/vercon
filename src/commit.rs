@@ -1,10 +1,9 @@
 use std::{fs, process::exit};
-use std::io::{Read, Write};
-
-use sha1::digest::crypto_common::Key;
+use std::io::Write;
 
 use crate::hash::generate_dir_hash;
 use crate::utils::path;
+use crate::utils::constants::COMMIT_INFO_DELIMITER;
 
 pub fn commit(message: &str) {
     if message.is_empty() {
@@ -28,11 +27,10 @@ pub fn commit(message: &str) {
     .append(true)
     .open(commit_info_path.clone())
     .expect("Could not open commit info file");
-    let _ = commit_info_file.write(format!("-\n{message}").as_bytes());
+    let _ = commit_info_file.write(format!("{message}").as_bytes());
 
     let head_hash = fs::read_to_string(path::get_vercon_path("HEAD")).expect("Could not read HEAD");
-    let _ = commit_info_file.write(format!("-\n{head_hash}").as_bytes());
-
+    let _ = commit_info_file.write(format!("{COMMIT_INFO_DELIMITER}{head_hash}").as_bytes());
 
     // Read staging directory and create commit hash
     let hash = generate_dir_hash(staging_dir_path.clone()); 

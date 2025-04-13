@@ -1,4 +1,4 @@
-use std::{fs, path::{self, Path, PathBuf}, process::exit};
+use std::{fs, path::{Path, PathBuf}, process::exit};
 use crate::utils::constants::VERCON_INIT_DIR;
 
 pub fn get_vercon_path(path: &str) -> String {

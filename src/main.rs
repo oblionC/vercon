@@ -7,7 +7,7 @@ mod status;
 
 use std::{env, process::exit};
 use hash::generate_dir_hash;
-use utils::path::{self, parse_route, validate_route};
+use utils::path::validate_route;
 
 fn main() {
     // let _ = init::init();

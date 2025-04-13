@@ -1,2 +1,2 @@
 pub mod path;
-mod constants;
+pub mod constants;

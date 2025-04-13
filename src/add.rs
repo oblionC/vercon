@@ -2,7 +2,6 @@ use std::{fs, io::Write};
 use std::path::{Path, PathBuf};
 use sha1::{Sha1, Digest};
 use hex::encode;
-use path_dedot::*;
 
 use crate::utils::path::{self, parse_route};
 
@@ -59,7 +58,6 @@ pub fn add_route(route: &str) {
 }
 
 pub fn add(routes: Vec<String>) {
-    let commit_info_route = path::get_vercon_path("commit_info");
     clear_staging();
     
     for route in routes {

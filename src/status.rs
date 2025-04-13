@@ -1,5 +1,5 @@
-use std::{collections::HashMap, fs, hash::Hash, path::{Path, PathBuf}, process::exit};
-use crate::{hash::generate_file_hash, utils::path::{self, parse_route}} ;
+use std::{collections::HashMap, fs,  path::PathBuf, process::exit};
+use crate::{hash::generate_file_hash, utils::{constants::COMMIT_INFO_DELIMITER, path::{self, parse_route}}} ;
 use strum_macros::FromRepr;
 
 
@@ -18,7 +18,7 @@ struct CommitInfo{
 }
 
 fn parse_commit_info(commit_info: &str, buf: &mut CommitInfo) {
-    let split_commit_info = commit_info.split("-\n");
+    let split_commit_info = commit_info.split(COMMIT_INFO_DELIMITER);
     let mut file_paths_hashmap: HashMap<PathBuf, String>= HashMap::new();
     for (i, info) in split_commit_info.enumerate() {
         match CommitInfoSection::from_repr(i).unwrap() {
@@ -58,9 +58,10 @@ pub fn check_for_changes () {
     let commit_info = fs::read_to_string(commit_info_path.clone()).expect("Could not get commit info");
     parse_commit_info(commit_info.as_str(), &mut commit_info_struct);
 
+    let all_files = path::get_all("./test");
+
     // All changed files
     println!("Changes to files: ");
-    let all_files = path::get_all("./test");
     for file in all_files {
         let file_path = parse_route(&file);
         if file_path.exists() {
@@ -68,17 +69,20 @@ pub fn check_for_changes () {
             let new_hash = generate_file_hash(file.to_owned());
 
             if prev_hash != new_hash {
-                println!("\t{}", file);
+                println!("\t{:?}", file_path);
             }
             else {
             }
         }
     }
 
-    // Get all items in root dir
-    // let paths_vec = path::get_all(path.as_str());
-    // for p in paths_vec {
-    //     println!("{}", p);
-    // }
-
+    // All deleted files
+    println!("Deleted files: ");
+    for file in commit_info_struct.file_paths.into_keys() {
+        if !file.exists() {
+            println!("\t{:?}", file);
+        }
+        else {
+        }
+    }
 }

@@ -11,6 +11,10 @@ pub fn commit(message: &str) {
         println!("You must provide a message");
         exit(1);
     }
+    // Paths used
+    let staging_dir_path = path::get_vercon_path("/staging/");
+    let head_path = path::get_vercon_path("/HEAD");
+    let objects_path =  path::get_vercon_path("/objects/");
 
     // Add message to commit info
     let commit_info_path = path::get_vercon_path("/commit_info"); 
@@ -29,13 +33,6 @@ pub fn commit(message: &str) {
     let head_hash = fs::read_to_string(path::get_vercon_path("HEAD")).expect("Could not read HEAD");
     let _ = commit_info_file.write(format!("-\n{head_hash}").as_bytes());
 
-    
-    // println!("{:?}", );
-
-    // Paths used
-    let staging_dir_path = path::get_vercon_path("/staging/");
-    let head_path = path::get_vercon_path("/HEAD");
-    let objects_path =  path::get_vercon_path("/objects/");
 
     // Read staging directory and create commit hash
     let hash = generate_dir_hash(staging_dir_path.clone()); 

@@ -1,4 +1,4 @@
-use std::{fs, path::Path, process::exit};
+use std::{fs, path::{self, Path, PathBuf}, process::exit};
 use crate::utils::constants::VERCON_INIT_DIR;
 
 pub fn get_vercon_path(path: &str) -> String {
@@ -15,7 +15,7 @@ pub fn get_vercon_path(path: &str) -> String {
 }
 
 fn push_path_to_buf(path: &str, buf: &mut Vec<String>) {
-    let path_p = Path::new(path);
+    let path_p = parse_route(path);
     if path_p.is_file() {
         buf.push(path.to_string());
     }
@@ -29,6 +29,29 @@ fn push_path_to_buf(path: &str, buf: &mut Vec<String>) {
         println!("Path does not exist");
         exit(1);
     }
+}
+
+// Unifies route across the project. Currently removes "./" from the start of a route
+pub fn parse_route<'a>(route: &'a str) -> PathBuf {
+    let res: PathBuf;
+    if route.len() < 2 {
+        let pathbuf = PathBuf::from(route);
+        return pathbuf;
+    }
+
+    if &route[..=1] == "./" {
+        res = PathBuf::from(&route[2..]);
+    }
+    else {
+        res = PathBuf::from(route);
+    }
+
+    res
+}
+
+
+pub fn validate_route(route: &str) -> bool {
+    PathBuf::from(route).exists()   
 }
 
 pub fn get_all(path: &str) -> Vec<String> {

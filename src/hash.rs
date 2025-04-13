@@ -2,6 +2,17 @@ use std::{fs, path::Path};
 use sha1::{Sha1, Digest};
 use hex::encode;
 
+use crate::utils::path::parse_route;
+
+pub fn generate_file_hash(route: String) -> String {
+    let mut hasher = Sha1::new();
+
+    let data = fs::read(parse_route(route.as_str())).expect("Could not read file");
+    hasher.update(data);
+
+    return encode(hasher.finalize());
+}
+
 // If the item is a directory, it updates the hasher with the hash value of the contents of the directory instead of its contents.
 // May have to change it so that it uses the content in the future.
 pub fn generate_dir_hash(route: String) -> String{

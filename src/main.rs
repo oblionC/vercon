@@ -7,10 +7,11 @@ mod status;
 
 use std::{env, process::exit};
 use hash::generate_dir_hash;
-use utils::path;
+use utils::path::{self, parse_route, validate_route};
 
 fn main() {
     // let _ = init::init();
+    validate_route("xdd");
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
         println!("No arguments provided");

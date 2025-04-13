@@ -1,9 +1,10 @@
 use std::{fs, io::Write};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use sha1::{Sha1, Digest};
 use hex::encode;
+use path_dedot::*;
 
-use crate::utils::path;
+use crate::utils::path::{self, parse_route};
 
 fn clear_staging() {
     // let staging_dir_path = String::from("") + VERCON_INIT_DIR + "/staging";
@@ -17,10 +18,11 @@ fn clear_staging() {
 // Recursive function to read contents of route 
 pub fn add_route(route: &str) {
     let mut hasher = Sha1::new();
-    let path: &Path = Path::new(route);
+    let path: PathBuf = parse_route(route);
+    println!("{route} = {path:?}");
     // Recurse if path is a directory
     if path.is_dir() {
-        let read_dir_result = fs::read_dir(path).expect("Object at path is not a directory");
+        let read_dir_result: fs::ReadDir = fs::read_dir(path).expect("Object at path is not a directory");
         for entry in read_dir_result {
             let path = entry.unwrap().path();
             add_route(path.to_str().unwrap());
@@ -28,7 +30,7 @@ pub fn add_route(route: &str) {
     }
     // Add hash if path is a file
     else if path.is_file() {
-        let read_result = fs::read(path).expect("File does not exist");
+        let read_result = fs::read(&path).expect("File does not exist");
 
         //  Create sha1 hash using contents of the file
         hasher.update(&read_result);

@@ -1,7 +1,8 @@
 use std::{fs, process::exit};
 use std::io::Write;
+use chrono::{ DateTime, Local };
 
-use crate::hash::generate_dir_hash;
+use crate::utils::hash::generate_dir_hash;
 use crate::utils::path;
 use crate::utils::constants::COMMIT_INFO_DELIMITER;
 
@@ -27,13 +28,18 @@ pub fn commit(message: &str) {
     .append(true)
     .open(commit_info_path.clone())
     .expect("Could not open commit info file");
-    let _ = commit_info_file.write(format!("{message}").as_bytes());
+    let _ = commit_info_file.write(format!("{COMMIT_INFO_DELIMITER}{message}").as_bytes());
 
     let head_hash = fs::read_to_string(path::get_vercon_path("HEAD")).expect("Could not read HEAD");
     let _ = commit_info_file.write(format!("{COMMIT_INFO_DELIMITER}{head_hash}").as_bytes());
 
+    let date = Local::now().to_string();
+    let _ = commit_info_file.write(format!("{COMMIT_INFO_DELIMITER}{date}").as_bytes());
+
     // Read staging directory and create commit hash
     let hash = generate_dir_hash(staging_dir_path.clone()); 
+
+    // Check if hash exists
 
     // Copy files from staging to commit directory
     let staging_dir = fs::read_dir(&staging_dir_path).unwrap();

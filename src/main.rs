@@ -1,12 +1,12 @@
 mod init;
-mod hash;
 mod add;
 mod commit;
 mod utils;
 mod status;
+mod diff;
+mod log;
 
 use std::{env, process::exit};
-use hash::generate_dir_hash;
 use utils::path::validate_route;
 
 fn main() {
@@ -39,8 +39,14 @@ fn main() {
     else if command == "status" {
         let _ = status::check_for_changes();
     }
+    else if command == "diff" {
+        let route = &args[2]; 
+        diff::print_diff(route.to_owned());
+    }
+    else if command == "log" {
+        log::log();
+    }
     else {
-        println!("{}", generate_dir_hash("./test".to_string()));
         panic!("Invalid command");
     }
 }

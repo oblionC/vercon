@@ -4,8 +4,11 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+chrono = "0.4.41"
+colored = "3.0.0"
 hex = "0.4.3"
 path-dedot = "3.1.1"
 sha1 = "0.10.6"
+similar = "2.7.0"
 strum = "0.27.1"
 strum_macros = "0.27.1"

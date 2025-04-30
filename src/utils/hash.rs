@@ -4,6 +4,12 @@ use hex::encode;
 
 use crate::utils::path::parse_route;
 
+use super::path::get_vercon_path;
+
+pub fn get_head_hash() -> String {
+    fs::read_to_string(get_vercon_path("HEAD")).expect("Could not read HEAD file")
+}
+
 pub fn generate_file_hash(route: String) -> String {
     let mut hasher = Sha1::new();
 
